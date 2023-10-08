@@ -1,0 +1,47 @@
+body{
+background-image: url(/static/img/html/library.jpg);
+background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+}
+h1 {text-align: center;
+    font-family: 'FontName1';
+	font-size: 60px;
+	color: #7FFFD4
+    }
+.a {font-size: 30px;
+    font-family: 'FontName2';
+    color: #fee5ac
+    }
+.b {font-size: 30px;
+    font-family: 'FontName2';
+    color: #00FA9A}
+.c {font-size: 30px;
+    font-family: 'FontName2';
+    color: #0000FF}
+.d {font-size: 30px;
+    font-family: 'FontName2';
+    color: #FFFF00}
+@font-face {
+	font-family: 'FontName1';
+	src: url(/static/fonts/ofont.ru_Banff.ttf)}
+@font-face {
+	font-family: 'FontName2';
+	src: url(/static/fonts/ofont.ru_Honday.ttf)}
+body {
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding-bottom: 100px; //height of the footer
+  box-sizing: border-box;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
