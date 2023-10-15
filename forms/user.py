@@ -14,6 +14,14 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
+    def get_public(self):
+        return {'name': self.name.data,
+                'surname': self.surname.data,
+                'email': self.email.data,
+                'phone_number': self.phone_number.data,
+                'password': self.password.data}
+
+
 
     def check_password(self, that):
         return self.password.data == that

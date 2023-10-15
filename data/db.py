@@ -1,6 +1,7 @@
 from data.tutors import Tutor
 from data.students import Student
 from data.parents import Parent
+from data.users import User
 from data import db_session
 
 

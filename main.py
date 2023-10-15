@@ -1,9 +1,10 @@
 from flask import Flask, render_template, redirect, request, abort, url_for
 from requests import get
 from data import db_session
+from forms.user import RegisterForm, LoginForm
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from forms import parent, student, tutor
-from data.tutors import Tutor
+from data.users import User
 from data.db import MyDataBase
 
 app = Flask(__name__)
@@ -12,16 +13,11 @@ login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 db = MyDataBase()
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
-    return db_sess.query(Tutor).get(user_id)
-
-
-@app.route("/", methods=['GET', 'POST'])
-def index():
-    if not current_user.is_authenticated:
-        return render_template('index.html')
+    return db_sess.query(User).get(user_id)
 
 
 @app.route('/logout')
@@ -31,5 +27,45 @@ def logout():
     return redirect("/")
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+
+    if not form.validate_on_submit():
+        return render_template('register.html', title='Регистрация', form=form)
+
+    db_sess = db_session.create_session()
+    if not form.check_password_again():
+        return render_template('register.html', title='Регистрация', form=form,
+                               message="Пароли не совпадают")
+    elif db_sess.query(User).filter(User.email == form.email.data).first():
+        return render_template('register.html', title='Регистрация', form=form,
+                               message="Такой пользователь уже есть")
+    else:
+        get('http://127.0.0.1:5000/api/register/', params=form.get_public())
+        return redirect('/login')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html', message="Неправильный логин или пароль", form=form)
+    return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    if not current_user.is_authenticated:
+        return render_template('index.html')
+
+    return render_template("home.html")
+
+
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=5000, host='127.0.0.1')

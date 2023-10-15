@@ -1,5 +1,5 @@
 body{
-background-image: url(/static/img/html/library.jpg);
+background-image: url(/static/img/html/main_page_fon.png);
 background-repeat: no-repeat;
 background-position: center center;
 background-attachment: fixed;
@@ -10,25 +10,25 @@ background-size: cover;
 }
 h1 {text-align: center;
     font-family: 'FontName1';
-	font-size: 60px;
-	color: #7FFFD4
+	font-size: 70px;
+	color: #00FF00
     }
-.a {font-size: 30px;
+.a {font-size: 35px;
     font-family: 'FontName2';
     color: #fee5ac
     }
-.b {font-size: 30px;
+.b {font-size: 35px;
     font-family: 'FontName2';
-    color: #00FA9A}
-.c {font-size: 30px;
+    color: #8B008B}
+.c {font-size: 35px;
     font-family: 'FontName2';
     color: #0000FF}
-.d {font-size: 30px;
+.d {font-size: 35px;
     font-family: 'FontName2';
     color: #FFFF00}
 @font-face {
 	font-family: 'FontName1';
-	src: url(/static/fonts/ofont.ru_Banff.ttf)}
+	src: url(/static/fonts/ambidexter_regular.otf)}
 @font-face {
 	font-family: 'FontName2';
 	src: url(/static/fonts/ofont.ru_Honday.ttf)}
