@@ -4,7 +4,9 @@ from data import db_session
 from forms.user import RegisterForm, LoginForm
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from forms import parent, student, tutor
+from api import main_api
 from data.users import User
+from requests import get, put, post
 from data.db import MyDataBase
 
 app = Flask(__name__)
@@ -68,4 +70,6 @@ def index():
 
 
 if __name__ == '__main__':
+    db_session.global_init("tutorcoon.db")
+    app.register_blueprint(main_api.blueprint)
     app.run(port=5000, host='127.0.0.1')
