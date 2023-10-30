@@ -63,6 +63,7 @@ def login():
 def index():
     if not current_user.is_authenticated:
         return render_template('index.html')
+    print(1)
 
     return render_template("home.html")
 
