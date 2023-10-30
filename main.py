@@ -1,9 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, url_for
-from requests import get
 from data import db_session
 from forms.user import RegisterForm, LoginForm
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
-from forms import parent, student, tutor
 from api import main_api
 from data.users import User
 from requests import get, put, post
@@ -44,7 +42,7 @@ def register():
         return render_template('register.html', title='Регистрация', form=form,
                                message="Такой пользователь уже есть")
     else:
-        get('http://127.0.0.1:5000/api/register/', params=form.get_public())
+        post('http://127.0.0.1:5000/api/register/', params=form.get_public())
         return redirect('/login')
 
 

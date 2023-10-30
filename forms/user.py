@@ -8,6 +8,7 @@ class RegisterForm(FlaskForm):
     name = StringField('Имя', validators=[DataRequired()])
     surname = StringField('Фамилия', validators=[DataRequired()])
     email = EmailField('Почта', validators=[DataRequired()])
+    status = StringField('Ваш статус', validators=[DataRequired()])
     phone_number = StringField('Номер телефона', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
@@ -19,7 +20,8 @@ class RegisterForm(FlaskForm):
                 'surname': self.surname.data,
                 'email': self.email.data,
                 'phone_number': self.phone_number.data,
-                'password': self.password.data}
+                'password': self.password.data,
+                'status': self.status.data}
 
 
 

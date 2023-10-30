@@ -22,6 +22,14 @@
             </p>
         {% endfor %}
     </p>
+     <p style="color: #E0FFFF">
+        {{ form.status.label }}<br>
+        <select name="status" required="required">
+            <option value="tutor">Репетитор</option>
+            <option value="student">Ученик</option>
+            <option value="parent">Родитель</option>
+        </select>
+     </p>
     <p style="color: #E0FFFF">
         {{ form.phone_number.label }}<br>
         {{ form.phone_number(class="form-control") }}<br>
