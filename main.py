@@ -6,6 +6,9 @@ from api import main_api
 from data.users import User
 from requests import get, put, post
 from data.db import MyDataBase
+from datetime import date
+import calendar
+
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -63,9 +66,29 @@ def login():
 def index():
     if not current_user.is_authenticated:
         return render_template('index.html')
-    print(1)
-
-    return render_template("home.html")
+    current_date = str(date.today()).split('-')
+    year, month = int(current_date[0]), int(current_date[1])
+    cort = calendar.monthrange(year, month)
+    if cort[0] == 0:
+        sp_before = []
+    else:
+        month_before = month - 1
+        if month_before == 0:
+            month_before = 12
+            cort_before = calendar.monthrange(year - 1, month_before)
+        else:
+            cort_before = calendar.monthrange(year, month_before)
+        sp = [i for i in range(cort_before[1] + 1)]
+        sp_before = [i for i in sp[-1 * cort[0]:]]
+    sp_now = []
+    for i in range(6):
+        if i == 0:
+            sp_now.append([i for i in range(1, 7 - cort[0] + 1)])
+        elif i != 5:
+            sp_now.append([i for i in range(sp_now[-1][-1] + 1, sp_now[-1][-1] + 8)])
+        else:
+            sp_now.append([i for i in range(sp_now[-1][-1] + 1, cort[1] + 1)])
+    return render_template("home.html", sp_before=sp_before, sp_now=sp_now)
 
 
 if __name__ == '__main__':
