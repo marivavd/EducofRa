@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
@@ -24,24 +25,15 @@
           <li class="nav-item active">
             <a class="navbar-brand" href="/">Home</a>
           </li>
-          {% if current_user.status == "student" %}
           <li class="nav-item active">
-            <a class="navbar-brand" href="/">Add a tutor</a>
+            <a class="navbar-brand" href="/">Help material</a>
           </li>
           <li class="nav-item active">
-            <a class="navbar-brand" href="/">Add a parent</a>
+            <a class="navbar-brand" href="/">Tests</a>
           </li>
-          {% endif %}
-          {% if current_user.status == "tutor" %}
           <li class="nav-item active">
-            <a class="navbar-brand" href="/">Add a tutor</a>
+            <a class="navbar-brand" href="/">Video lessons</a>
           </li>
-          {% endif %}
-          {% if current_user.status == "parent" %}
-          <li class="nav-item active">
-            <a class="navbar-brand" href="/">Add a child</a>
-          </li>
-          {% endif %}
         </ul>
       </div>
       <a class="navbar-brand" href="/user_page">{{ current_user.name }}</a>
@@ -50,8 +42,8 @@
     {% block content %}{% endblock %}
   </main>
   </body>
-<footer class="bg-light text-center text-lg-start" style="margin-top: 30px">
-  <div class="text-center p-3" style="background-color: #DEB887; color: Snow">
+<footer class="bg-dark text-center text-lg-start" style="margin-top: 30px">
+  <div class="text-center p-3" style="color: Snow; font-family: Roboto; font-size: 20px">
     Tutorcoon
   </div>
 </footer>

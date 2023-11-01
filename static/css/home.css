@@ -1,29 +1,18 @@
-* {
+@font-face {
+	font-family: 'FontName';
+	src: url(/static/fonts/ofont.ru_Honday.ttf)}
+li, span {
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto';
   list-style: none;
   margin: 0;
   outline: none;
   padding: 0;
 }
 
-a {
-  text-decoration: none;
-}
 
 body, html {
   height: 100%;
-}
-
-body {background-image: url(/static/img/html/main_page_fon.png);
-background-repeat: no-repeat;
-background-position: center center;
-background-attachment: fixed;
--webkit-background-size: cover;
--moz-background-size: cover;
--o-background-size: cover;
-background-size: cover;
-  font-family: 'Roboto', sans-serif;
 }
 
 .container {

@@ -4,11 +4,12 @@ from forms.user import RegisterForm, LoginForm
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from api import main_api
 from data.users import User
+from data.tutors import Tutor
+from data.students import Student
 from requests import get, put, post
 from data.db import MyDataBase
 from datetime import date
 import calendar
-
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -62,6 +63,17 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.route("/my_students/<int:user_id>")
+def my_students(user_id):
+    db_sess = db_session.create_session()
+    tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
+    sp_id_of_students = tutor.students_and_lessons["id_of_students"]
+    sp_students = []
+    for i in sp_students:
+        sp_students.append(db_sess.query(User).filter(User.id == i).first())
+    return render_template("my_students.html", sp_students=sp_students)
+
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if not current_user.is_authenticated:
@@ -93,7 +105,6 @@ def index():
             sp_now.append([i for i in range(sp_now[-1][-1] + 1, cort[1] + 1)])
             a = sp_now[-1][-1]
     sp_after = []
-    print(cort)
     for i in range(1, 7 - len(sp_now[-1]) + 1):
         sp_after.append(i)
     if len(sp_after) == 7:
@@ -103,8 +114,17 @@ def index():
     else:
         height = 600
     sp_week = ['Понедельник', 'Вторник', "Среда", "Четверг", "Пятница", "Суббота", "Восресенье"]
+    sl_months = {1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь', 7: 'Июль',
+                 8: 'Август', 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'}
+    number = int(current_date[2] if current_date[2][0] != '0' else (current_date[2][1]))
     return render_template("home.html", sp_before=sp_before, sp_now=sp_now, sp_after=sp_after, height=height,
-                           week_day=sp_week[cort[0]], number=12, month=month, year=year)
+                           week_day=sp_week[cort[0]], number=number, month=sl_months[month], year=year)
+
+
+@app.route("/user_page")
+def user_page():
+    if current_user.is_authenticated:
+        return render_template("user_page.html")
 
 
 if __name__ == '__main__':

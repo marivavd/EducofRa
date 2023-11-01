@@ -17,6 +17,9 @@ class User(SqlAlchemyBase, UserMixin):
     avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     status = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    students = orm.relationship("Student", backref="all_users")
+    tutors = orm.relationship("Tutor", backref='all_users')
+    parents = orm.relationship("Parent", backref='all_users')
 
     def __repr__(self):
         return f'<User> {self.id} {self.name} {self.email}'

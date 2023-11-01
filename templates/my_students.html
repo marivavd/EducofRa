@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title%}my_students{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/my_students.css">
+{% for i in sp_students %}
+<div>
+   <a href="/avatars/{{ i.avatar }}">
+       <img class="img_author" src="{{ authors[i].picture }}">
+   </a>
+   <p><b><i>{{ i.name }} {{ i.surname}}</i></b></p>
+</div>
+{% endfor %}
+{% endblock %}
