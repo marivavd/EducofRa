@@ -81,14 +81,30 @@ def index():
         sp = [i for i in range(cort_before[1] + 1)]
         sp_before = [i for i in sp[-1 * cort[0]:]]
     sp_now = []
-    for i in range(6):
-        if i == 0:
+    a = 1
+    while a < cort[1]:
+        if a == 1:
             sp_now.append([i for i in range(1, 7 - cort[0] + 1)])
-        elif i != 5:
+            a = sp_now[0][-1]
+        elif a + 7 <= cort[1]:
             sp_now.append([i for i in range(sp_now[-1][-1] + 1, sp_now[-1][-1] + 8)])
+            a = sp_now[-1][-1]
         else:
             sp_now.append([i for i in range(sp_now[-1][-1] + 1, cort[1] + 1)])
-    return render_template("home.html", sp_before=sp_before, sp_now=sp_now)
+            a = sp_now[-1][-1]
+    sp_after = []
+    print(cort)
+    for i in range(1, 7 - len(sp_now[-1]) + 1):
+        sp_after.append(i)
+    if len(sp_after) == 7:
+        sp_after = []
+    if len(sp_now) == 5:
+        height = 550
+    else:
+        height = 600
+    sp_week = ['Понедельник', 'Вторник', "Среда", "Четверг", "Пятница", "Суббота", "Восресенье"]
+    return render_template("home.html", sp_before=sp_before, sp_now=sp_now, sp_after=sp_after, height=height,
+                           week_day=sp_week[cort[0]], number=12, month=month, year=year)
 
 
 if __name__ == '__main__':
