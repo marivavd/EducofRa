@@ -9,7 +9,12 @@ li, span {
   outline: none;
   padding: 0;
 }
+a{color: white;
+text-decoration: none;}
 
+a:hover {color: white;
+text-decoration: none;
+}
 
 body, html {
   height: 100%;
@@ -40,19 +45,6 @@ body, html {
   transform: rotateY(0deg);
 }
 
-.current-date {
-  border-bottom: 1px solid rgba(73, 114, 133, .6);
-  display: flex;
-  justify-content: space-between;
-  padding: 30px 40px;
-}
-
-.current-date h1 {
-  color: #dfebed;
-  font-size: 1.4em;
-  font-weight: 300;
-}
-
 .week-days {
   color: #dfebed;
   display: flex;
@@ -81,6 +73,18 @@ body, html {
   justify-content: space-between;
   margin-bottom: 20px;
   width: 100%;
+}
+.current-date {
+  border-bottom: 1px solid rgba(73, 114, 133, .6);
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 40px;
+}
+
+.current-date h1 {
+  color: #dfebed;
+  font-size: 1.4em;
+  font-weight: 300;
 }
 
 .last-month {

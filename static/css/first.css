@@ -9,9 +9,9 @@ background-attachment: fixed;
 background-size: cover;
 }
 h1 {text-align: center;
-    font-family: 'FontName1';
+    font-family: "FontName2";
 	font-size: 70px;
-	color: #00FF00
+	color: #fee5ac
     }
 .a {font-size: 35px;
     font-family: 'FontName2';
@@ -19,13 +19,15 @@ h1 {text-align: center;
     }
 .b {font-size: 35px;
     font-family: 'FontName2';
-    color: #8B008B}
+    color: #fee5ac
+    }
 .c {font-size: 35px;
     font-family: 'FontName2';
-    color: #0000FF}
+    color: #fee5ac
+    }
 .d {font-size: 35px;
     font-family: 'FontName2';
-    color: #FFFF00}
+    color: #fee5ac}
 @font-face {
 	font-family: 'FontName1';
 	src: url(/static/fonts/ambidexter_regular.otf)}
@@ -44,4 +46,12 @@ footer {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+a {
+  box-sizing: border-box;
+  font-family: 'Roboto';
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 0;
 }

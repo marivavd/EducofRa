@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, url_for
 from data import db_session
 from forms.user import RegisterForm, LoginForm
+from forms.adding import PostForm
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from api import main_api
 from data.users import User
@@ -30,6 +31,34 @@ def logout():
     logout_user()
     return redirect("/")
 
+@app.route("/day/<int:number>/<int:user_id>")
+def day(number, user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == user_id).first()
+    if user.status != 'parent':
+        ...
+    return render_template("day.html")
+
+
+@app.route("/add_student/<int:user_id>", methods=['GET', 'POST'])
+def add_student(user_id):
+    form = PostForm()
+
+    if request.method == 'GET':
+        return render_template('adding.html', form=form)
+    if not form.validate_on_submit():
+        return render_template("adding.html", form=form)
+    db_sess = db_session.create_session()
+    if db_sess.query(Student).filter(Student.id_user == form.get_id()).first() != None:
+        tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
+        tutor.students_and_lessons["id_of_students"].append(form.get_id())
+        put(f'http://127.0.0.1:5000/api/add_student/{current_user.id}',
+            json={"students_and_lessons": tutor.students_and_lessons}).json()
+        student = db_sess.query(Student).filter(Student.id_user == form.get_id()).first()
+        student.tutors_and_parents_and_lessons["id_of_tutors"].append(current_user.id)
+        put(f'http://127.0.0.1:5000/api/add_tutor/{form.get_id()}',
+            json={"tutors_and_parents_and_lessons": student.tutors_and_parents_and_lessons}).json()
+    return redirect('/')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -69,7 +98,7 @@ def my_students(user_id):
     tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
     sp_id_of_students = tutor.students_and_lessons["id_of_students"]
     sp_students = []
-    for i in sp_students:
+    for i in sp_id_of_students:
         sp_students.append(db_sess.query(User).filter(User.id == i).first())
     return render_template("my_students.html", sp_students=sp_students)
 
