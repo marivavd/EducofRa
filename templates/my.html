@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
-{% block title%}my_students{% endblock %}
+{% block title%}my{% endblock %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="/static/css/my_students.css">
+<link rel="stylesheet" type="text/css" href="/static/css/my.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-{% for i in sp_students %}
+{% for i in sp %}
 <div>
    <a href="/avatars/{{ i.avatar }}">
-       <img class="img_student" src="/static/img/avatars/{{ i.avatar }}">
+       <img class="img" src="/static/img/avatars/{{ i.avatar }}">
    </a>
    <p><b><i>{{ i.name }} {{ i.surname}}</i></b></p>
 </div>
 {% endfor %}
-<a href="/add_student/{{current_user.id}}"><button><i class="fas fa-plus"></i></button></a>
+<a href="/{{ add_smth }}/{{current_user.id}}"><button><i class="fas fa-plus"></i></button></a>
 {% endblock %}

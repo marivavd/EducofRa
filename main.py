@@ -7,6 +7,7 @@ from api import main_api
 from data.users import User
 from data.tutors import Tutor
 from data.students import Student
+from data.parents import Parent
 from requests import get, put, post
 from data.db import MyDataBase
 from datetime import date
@@ -30,6 +31,7 @@ def load_user(user_id):
 def logout():
     logout_user()
     return redirect("/")
+
 
 @app.route("/day/<int:number>/<int:user_id>")
 def day(number, user_id):
@@ -59,6 +61,7 @@ def add_student(user_id):
         put(f'http://127.0.0.1:5000/api/add_tutor/{form.get_id()}',
             json={"tutors_and_parents_and_lessons": student.tutors_and_parents_and_lessons}).json()
     return redirect('/')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -100,7 +103,40 @@ def my_students(user_id):
     sp_students = []
     for i in sp_id_of_students:
         sp_students.append(db_sess.query(User).filter(User.id == i).first())
-    return render_template("my_students.html", sp_students=sp_students)
+    return render_template("my.html", sp=sp_students, add_smth='add_student')
+
+
+@app.route("/my_tutors/<int:user_id>")
+def my_tutors(user_id):
+    db_sess = db_session.create_session()
+    student = db_sess.query(Student).filter(Student.id_user == user_id).first()
+    sp_id_of_tutors = student.tutors_and_parents_and_lessons["id_of_tutors"]
+    sp_tutors = []
+    for i in sp_id_of_tutors:
+        sp_tutors.append(db_sess.query(User).filter(User.id == i).first())
+    return render_template("my.html", sp=sp_tutors, add_smth='add_tutor')
+
+
+@app.route("/my_parents/<int:user_id>")
+def my_parents(user_id):
+    db_sess = db_session.create_session()
+    student = db_sess.query(Student).filter(Student.id_user == user_id).first()
+    sp_id_of_parents = student.tutors_and_parents_and_lessons["id_of_parents"]
+    sp_parents = []
+    for i in sp_id_of_parents:
+        sp_parents.append(db_sess.query(User).filter(User.id == i).first())
+    return render_template("my.html", sp=sp_parents, add_smth='add_parent')
+
+
+@app.route("/my_children/<int:user_id>")
+def my_children(user_id):
+    db_sess = db_session.create_session()
+    parent = db_sess.query(Parent).filter(Parent.id_user == user_id).first()
+    sp_id_of_children = parent.id_of_children["id_of_children"]
+    sp_children = []
+    for i in sp_id_of_children:
+        sp_children.append(db_sess.query(User).filter(User.id == i).first())
+    return render_template("my.html", sp=sp_children, add_smth='add_child')
 
 
 @app.route("/", methods=['GET', 'POST'])
