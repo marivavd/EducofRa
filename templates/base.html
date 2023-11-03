@@ -34,6 +34,10 @@
           <li class="nav-item active">
             <a class="navbar-brand" href="/">Video lessons</a>
           </li>
+          {% if current_user.status == 'tutor' %}
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/add_course">Add course</a>
+          </li>
         </ul>
       </div>
       <a class="navbar-brand" href="/user_page">{{ current_user.name }}</a>

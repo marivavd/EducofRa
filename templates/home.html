@@ -25,24 +25,24 @@
               <span class="last-month">{{i}}</span>
             {% endfor %}
             {% for i in sp_now[0] %}
-              <span><a href="/day/{{i}}/{{current_user.id}}">0{{i}}</a></span>
+              <span><a href="/day/{{i}}">0{{i}}</a></span>
             {% endfor %}
           </div>
          {% for l in sp_now[1:-1]%}
           <div>
           {%for i in l%}
           {%if i < 10 %}
-              <span><a href="/day/{{i}}/{{current_user.id}}">0{{i}}</a></span>
+              <span><a href="/day/{{i}}">0{{i}}</a></span>
           {%endif%}
           {%if i >= 10 %}
-              <span><a href="/day/{{i}}/{{current_user.id}}">{{i}}</a></span>
+              <span><a href="/day/{{i}}">{{i}}</a></span>
           {%endif%}
           {% endfor %}
             </div>
           {% endfor %}
            <div>
                {%for i in sp_now[-1] %}
-               <span><a href="/day/{{i}}/{{current_user.id}}">{{i}}</a></span>
+               <span><a href="/day/{{i}}">{{i}}</a></span>
                {% endfor %}
                {%for i in sp_after %}
                <span class="last-month">0{{i}}</span>

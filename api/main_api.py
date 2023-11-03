@@ -88,8 +88,8 @@ def add_student(user_id):
     return jsonify({'success': 'OK'})
 
 
-@blueprint.route('/api/add_tutor/<int:user_id>', methods=['PUT'])
-def add_tutor(user_id):
+@blueprint.route('/api/add_tutor_parent/<int:user_id>', methods=['PUT'])
+def add_tutor_or_parent(user_id):
     if not request.json:
         return jsonify({'error': 'Empty request'})
     db_sess = db_session.create_session()
@@ -97,6 +97,18 @@ def add_tutor(user_id):
     if not student:
         return jsonify({'error': 'Not found'})
     student.tutors_and_parents_and_lessons = request.json["tutors_and_parents_and_lessons"]
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+@blueprint.route('/api/add_child/<int:user_id>', methods=['PUT'])
+def add_child(user_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    parent = db_sess.query(Parent).filter(Parent.id_user == user_id).first()
+    if not parent:
+        return jsonify({'error': 'Not found'})
+    parent.id_of_children = request.json["id_of_children"]
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
