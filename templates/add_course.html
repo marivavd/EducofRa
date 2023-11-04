@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title%}add_сщгкыу{% endblock %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<!-- 2. Подключить CSS-файл библиотеки Bootstrap 3 DateTimePicker -->
+<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" />
+
+<!-- 3. Подключить библиотеку jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- 4. Подключить библиотеку moment -->
+<script src="js/moment-with-locales.min.js"></script>
+<!-- 5. Подключить js-файл фреймворка Bootstrap 3 -->
+<script src="js/bootstrap.min.js"></script>
+<!-- 6. Подключить js-файл библиотеки Bootstrap 3 DateTimePicker -->
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/css/adding.css">
+<h1 class="main_text">Добавить пользователя</h1>
+<form action="" method="post" style="width: 60%; margin: auto; display: table" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p style="color: #000000">
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p style="color: #000000">
+        {{ form.weekday.label }}<br>
+        <select multiple="multiple">
+    <option value="0">Понедельник</option>
+    <option value="1">Вторник</option>
+    <option value="2">Среда</option>
+    <option value="3">Четверг</option>
+    <option value="4">Пятница</option>
+    <option value="5">Суббота</option>
+    <option value="5">Восресенье</option>
+</select>
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endblock %}

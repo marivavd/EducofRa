@@ -177,9 +177,9 @@ def add_course():
     form = LessonForm()
 
     if request.method == 'GET':
-        return render_template('adding.html', form=form)
+        return render_template('add_course.html', form=form)
     if not form.validate_on_submit():
-        return render_template("adding.html", form=form)
+        return render_template("add_course.html", form=form)
     db_sess = db_session.create_session()
     if db_sess.query(Student).filter(Student.id_user == form.get_id()).first() != None:
         parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
@@ -274,6 +274,7 @@ def index():
     if not current_user.is_authenticated:
         return render_template('index.html')
     current_date = str(date.today()).split('-')
+    print(date.today().weekday())
     year, month = int(current_date[0]), int(current_date[1])
     cort = calendar.monthrange(year, month)
     if cort[0] == 0:

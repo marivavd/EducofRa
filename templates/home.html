@@ -1,8 +1,50 @@
-{% extends 'base.html' %}
-{% block title%}home{% endblock %}
-{% block content %}
-<link rel="stylesheet" type="text/css" href="/static/css/home.css">
-<div class="container">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/home.css">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="/static/img/html/emblem.jpg" type="image/jpg" rel="shortcut icon">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a href="/" class="navbar-brand">
+        <img src="/static/img/html/emblem.jpg" width="50" height="40" alt="logo">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="#navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/">Help material</a>
+          </li>
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/">Tests</a>
+          </li>
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/">Video lessons</a>
+          </li>
+          {% if current_user.status == 'tutor' %}
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/add_course">Add course</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <a class="navbar-brand" href="/user_page">{{ current_user.name }}</a>
+    </nav>
+  <main role="main" class="container">
+      <div class="container">
   <div class="calendar" style="height: {{height}}px">
     <div class="front">
       <div class="current-date">
@@ -53,4 +95,11 @@
     </div>
   </div>
 </div>
-{% endblock %}
+  </main>
+  </body>
+<footer class="bg-dark text-center text-lg-start" style="margin-top: 30px">
+  <div class="text-center p-3" style="color: Snow; font-family: Roboto; font-size: 20px">
+    Tutorcoon
+  </div>
+</footer>
+</html>

@@ -12,7 +12,7 @@
         {% endif %}
         {% if current_user.status == 'tutor' %}
         <a type="button" class="btn btn-success btn-lg" href="/my_students/{{ current_user.id }}" style="margin: 5px">Мои ученики</a>
-        <a type="button" class="btn btn-info btn-lg" href="/my_students/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
+        <a type="button" class="btn btn-info btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
         {% endif %}
         {% if current_user.status == 'parent' %}
         <a type="button" class="btn btn-info btn-lg" href="/my_children/{{ current_user.id }}" style="margin: 5px">Мои дети</a>
