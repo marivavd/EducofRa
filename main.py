@@ -5,10 +5,13 @@ from data import db_session
 from forms.user import RegisterForm, LoginForm
 from forms.adding import PostForm
 from forms.add_lesson import LessonForm
+from forms.add_time import TimeForm
+from forms.list import Listform
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from api import main_api
 from data.users import User
 from data.tutors import Tutor
+from data.weekdays import Weekday
 from data.students import Student
 from data.parents import Parent
 from data.lessons import Lesson
@@ -175,28 +178,35 @@ def add_child():
 @app.route("/add_course", methods=['GET', 'POST'])
 def add_course():
     form = LessonForm()
-
+    db_sess = db_session.create_session()
+    form.weekday.query = db_sess.query(Weekday).all()
     if request.method == 'GET':
         return render_template('add_course.html', form=form)
     if not form.validate_on_submit():
         return render_template("add_course.html", form=form)
-    db_sess = db_session.create_session()
-    if db_sess.query(Student).filter(Student.id_user == form.get_id()).first() != None:
-        parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
-        parent.id_of_children["id_of_children"].append(form.get_id())
-        put(f'http://127.0.0.1:5000/api/add_child/{current_user.id}',
-            json={"id_of_children": parent.id_of_children}).json()
-        student = db_sess.query(Student).filter(Student.id_user == form.get_id()).first()
-        student.tutors_and_parents_and_lessons["id_of_parents"].append(current_user.id)
-        put(f'http://127.0.0.1:5000/api/add_tutor_parent/{form.get_id()}',
-            json={"tutors_and_parents_and_lessons": student.tutors_and_parents_and_lessons}).json()
-    return redirect('/')
+    line_sp = ','.join([i.name for i in form.get_all()['weekday']])
+    return redirect(f"/choose_time/{form.get_all()['name']}/{line_sp}")
 
+
+
+@app.route("/choose_time/<name>/<line_sp>", methods=['GET', 'POST'])
+def choose_time(name, line_sp):
+    print(1)
+    weekday = [i for i in line_sp.split(',')]
+    list_form = Listform(request.form)
+    list_form.list_time.min_entries = len(weekday)
+    for i in range(len(weekday)):
+        list_form.list_time.append_entry()
+    for i in range(len(list_form.list_time)):
+        list_form.list_time[i].weekday = weekday[i]
+    if request.method == 'GET':
+        return render_template('choose_time.html', form=list_form, weekday=weekday)
+    if not list_form.validate_on_submit():
+        return render_template("choose_time.html", form=list_form, weekday=weekday)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-
     if not form.validate_on_submit():
         return render_template('register.html', title='Регистрация', form=form)
 
@@ -274,7 +284,6 @@ def index():
     if not current_user.is_authenticated:
         return render_template('index.html')
     current_date = str(date.today()).split('-')
-    print(date.today().weekday())
     year, month = int(current_date[0]), int(current_date[1])
     cort = calendar.monthrange(year, month)
     if cort[0] == 0:

@@ -112,3 +112,14 @@ def add_child(user_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
+@blueprint.route('/api/add_course/<str:name>', methods=['POST'])
+def add_student(user_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
+    if not tutor:
+        return jsonify({'error': 'Not found'})
+    tutor.students_and_lessons = request.json["students_and_lessons"]
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
