@@ -10,7 +10,7 @@ class Lesson(SqlAlchemyBase, UserMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    id_tutor = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('tutors.id'))
+    id_tutor = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('tutors.id_user'))
     students_and_when = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, default={"id_of_students": [],
                                                                                    "when": []})
 

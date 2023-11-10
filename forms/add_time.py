@@ -8,7 +8,6 @@ class TimeForm(FlaskForm):
     weekday = StringField(validators=[DataRequired()])
     weekday_time = TimeField(validators=[DataRequired()])
 
-
     def get_time(self):
         return self.weekday_time.data
 

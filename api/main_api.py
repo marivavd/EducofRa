@@ -5,6 +5,7 @@ from data.users import User
 from data.tutors import Tutor
 from data.students import Student
 from data.parents import Parent
+from data.lessons import Lesson
 from data.db import MyDataBase
 
 
@@ -112,14 +113,15 @@ def add_child(user_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
-@blueprint.route('/api/add_course/<str:name>', methods=['POST'])
-def add_student(user_id):
-    if not request.json:
-        return jsonify({'error': 'Empty request'})
+@blueprint.route('/api/add_lesson/<int:user_id>', methods=['POST'])
+def add_lesson(user_id):
+    lesson = Lesson(
+        id_tutor=user_id,
+        name=request.args.get('name'),
+        surname=request.args.get('surname'),
+        id_user=request.args.get('id_user')
+    )
     db_sess = db_session.create_session()
-    tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
-    if not tutor:
-        return jsonify({'error': 'Not found'})
-    tutor.students_and_lessons = request.json["students_and_lessons"]
+    db_sess.add(lesson)
     db_sess.commit()
     return jsonify({'success': 'OK'})

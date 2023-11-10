@@ -191,14 +191,20 @@ def add_course():
 
 @app.route("/choose_time/<name>/<line_sp>", methods=['GET', 'POST'])
 def choose_time(name, line_sp):
-    print(1)
     weekday = [i for i in line_sp.split(',')]
     list_form = Listform(request.form)
     list_form.list_time.min_entries = len(weekday)
     for i in range(len(weekday)):
         list_form.list_time.append_entry()
     for i in range(len(list_form.list_time)):
-        list_form.list_time[i].weekday = weekday[i]
+        try:
+            list_form.list_time[i].weekday = weekday[i]
+        except Exception:
+            sl = {"id_of_students": [], "when": []}
+            for day in range(len(weekday)):
+                sl['when'].append([weekday[day], list_form.list_time[day].get_time()])
+            post(f'http://127.0.0.1:5000/api/add_lesson/{current_user.id}', params={'name': name, ' students_and_when': sl})
+            return redirect('/')
     if request.method == 'GET':
         return render_template('choose_time.html', form=list_form, weekday=weekday)
     if not list_form.validate_on_submit():

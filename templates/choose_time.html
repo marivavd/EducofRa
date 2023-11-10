@@ -3,7 +3,7 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="/static/css/adding.css">
 <h1 class="main_text">Выбор времени занятий</h1>
-<form action="/api/add_course/{{name}}/{{ " method="post" style="width: 60%; height: 100%;margin: auto; display: table" enctype="multipart/form-data">
+<form action="" method="post" style="width: 60%; height: 100%;margin: auto; display: table" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     {% for x in form.list_time%}
     <p style="color: #000000; font-size: 25px">
