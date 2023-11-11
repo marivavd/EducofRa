@@ -117,11 +117,21 @@ def add_child(user_id):
 def add_lesson(user_id):
     lesson = Lesson(
         id_tutor=user_id,
-        name=request.args.get('name'),
-        surname=request.args.get('surname'),
-        id_user=request.args.get('id_user')
+        name=request.args.get('name')
     )
     db_sess = db_session.create_session()
     db_sess.add(lesson)
+    db_sess.commit()
+    return jsonify({'id': user_id})
+
+@blueprint.route('/api/add_time/<int:lesson_id>', methods=['PUT'])
+def add_time(lesson_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
+    if not lesson:
+        return jsonify({'error': 'Not found'})
+    lesson.students_and_when = request.json["students_and_when"]
     db_sess.commit()
     return jsonify({'success': 'OK'})

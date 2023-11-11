@@ -200,10 +200,16 @@ def choose_time(name, line_sp):
         try:
             list_form.list_time[i].weekday = weekday[i]
         except Exception:
+            db_sess = db_session.create_session()
             sl = {"id_of_students": [], "when": []}
+            sl_week = {'Понедельник': 1, 'Вторник': 2, "Среда": 3, "Четверг": 4, "Пятница": 5, "Суббота": 6, "Восресенье": 7}
             for day in range(len(weekday)):
-                sl['when'].append([weekday[day], list_form.list_time[day].get_time()])
-            post(f'http://127.0.0.1:5000/api/add_lesson/{current_user.id}', params={'name': name, ' students_and_when': sl})
+                sl['when'].append([sl_week[weekday[day]], str(list_form.list_time[day].get_time())])
+            answer = post(f'http://127.0.0.1:5000/api/add_lesson/{current_user.id}', params={'name': name})
+            lesson = db_sess.query(Lesson).filter(Lesson.id == answer.json()['id']).first()
+            lesson.students_and_when["when"] = sl['when']
+            put(f'http://127.0.0.1:5000/api/add_time/{lesson.id}',
+                json={"students_and_when": lesson.students_and_when}).json()
             return redirect('/')
     if request.method == 'GET':
         return render_template('choose_time.html', form=list_form, weekday=weekday)
