@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title%}my{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/course_for_tutor.css">
+<h1>{{ lesson.name }}</h1>
+<h2>Редактировать участников:</h2>
+<form method="POST" action="/change_students/{{ lesson.id }}">
+    {% for i in sp_stud %}
+    {% if i.id_user in sp_id_of_students_already %}
+    <div class="checkbox">
+    <input type="checkbox" name="{{ i.id_user }}" value="{{ i.id_user }}" checked>
+    <label>{{ i.surname }} {{ i.name }}</label>
+    </div>
+    {% else %}
+    <div class="checkbox">
+    <input type="checkbox" name="{{ i.id_user }}" value="{{ i.id_user }}">
+    <label>{{ i.surname }} {{ i.name }}</label>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

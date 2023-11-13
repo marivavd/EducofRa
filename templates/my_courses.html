@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title%}my_courses{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/my_courses.css">
+<h1>Мои курсы</h1>
+{% for i in range(len_sp) %}
+<p><a class='courses' href="/course/{{ sp[i].id }}">{{ i + 1}}. {{ sp[i].name }}</a></p>
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/page_of_tutor.css">
+{% if current_user %}
+    <h1 class="nickname">{{ student.surname }} {{ student.name }}</h1>
+    <h2>id: {{ student.id_user }}</h2>
+
+
+{% endif %}
+{% endblock %}

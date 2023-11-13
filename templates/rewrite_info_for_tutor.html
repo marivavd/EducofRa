@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/rewrite_info_for_tutor.css">
+<form method="post" action="{{ url_for('add_info')}}">
+    <label class="comment" for="msg">Информация:</label>
+    <textarea id="msg" name="about">{{ about }}</textarea>
+    <div>
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+{% endblock %}
