@@ -44,6 +44,7 @@ def logout():
 def day(number):
     current_month, current_year = datetime.datetime.today().month, datetime.datetime.today().year
     our_weekday = datetime.datetime(current_year, current_month, number).weekday()
+    this_day = str(datetime.datetime(current_year, current_month, number))
     db_sess = db_session.create_session()
     sp_all = []
     if current_user.status == 'student':
@@ -58,7 +59,11 @@ def day(number):
                     tutor = db_sess.query(User).get(lesson.id_tutor)
                     sp_all.append(f'{tutor.surname} {tutor.name}')
                     sp_all.append(lesson.name)
-        return render_template("day.html", who="Преподаватель", sp_len=len(sp_all), sp_all=sp_all)
+                    if this_day in lesson.homeworks.keys():
+                        sp_all.append('+')
+                    else:
+                        sp_all.append('-')
+        return render_template("day.html", who="Преподаватель", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
     elif current_user.status == 'tutor':
         tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
         sp_lessons = tutor.students_and_lessons['id_of_lessons']
@@ -75,7 +80,11 @@ def day(number):
                         sp_students.append(f'{student.surname} {student.name}')
                     sp_all.append(','.join(sp_students))
                     sp_all.append(lesson.name)
-        return render_template("day.html", who="Ученики", len_sp=len(sp_all), sp_all=sp_all)
+                    if this_day in lesson.homeworks.keys():
+                        sp_all.append('+')
+                    else:
+                        sp_all.append('-')
+        return render_template("day.html", who="Ученики", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
     else:
         parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
         for child_id in parent.id_of_children['id_of_children']:
@@ -89,7 +98,11 @@ def day(number):
                         sp_all.append(i[1])
                         sp_all.append(f'{student.surname} {student.name}')
                         sp_all.append(lesson.name)
-        return render_template("day.html", who="Ребёнок", sp_len=len(sp_all), sp_all=sp_all)
+                        if this_day in lesson.homeworks.keys():
+                            sp_all.append('+')
+                        else:
+                            sp_all.append('-')
+        return render_template("day.html", who="Ребёнок", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
 
 
 @app.route("/add_student", methods=['GET', 'POST'])
@@ -304,15 +317,17 @@ def my_children(user_id):
     return render_template("my.html", sp=sp_children, add_smth='add_child')
 
 
-@app.route("/my_courses_for_tutor/<int:user_id>")
-def my_courses_for_tutor(user_id):
+@app.route("/my_courses/<int:user_id>")
+def my_courses(user_id):
     db_sess = db_session.create_session()
-    tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
-    sp_id_of_lessons = tutor.students_and_lessons["id_of_lessons"]
+    if current_user.status == 'tutor':
+        tutor = db_sess.query(Tutor).filter(Tutor.id_user == user_id).first()
+        sp_id_of_lessons = tutor.students_and_lessons["id_of_lessons"]
+    else:
+        student = db_sess.query(Student).filter(Student.id_user == user_id).first()
+        sp_id_of_lessons = student.tutors_and_parents_and_lessons["id_of_lessons"]
     sp_lessons = []
-    print(sp_id_of_lessons)
     for i in sp_id_of_lessons:
-        print(i)
         sp_lessons.append(db_sess.query(Lesson).filter(Lesson.id == i).first())
     return render_template("my_courses.html", sp=sp_lessons, len_sp=len(sp_lessons))
 
@@ -329,6 +344,9 @@ def course(lesson_id):
         for i in sp_stud_id:
             sp_stud.append(db_sess.query(Student).filter(Student.id_user == i).first())
         return render_template("course_for_tutor.html", lesson=lesson, sp_stud=sp_stud, sp_id_of_students_already=sp_id_of_students_already)
+    if current_user.status == 'student':
+        tutor = db_sess.query(Tutor).filter(Tutor.id_user == lesson.id_tutor).first()
+        return render_template("course_for_student.html", lesson=lesson, tutor=tutor)
 
 
 @app.route("/", methods=['GET', 'POST'])

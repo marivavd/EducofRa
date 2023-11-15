@@ -11,13 +11,21 @@
 			    <th><h1>Время</h1></th>
 		    	<th><h1>{{ who }}</h1></th>
 		    	<th><h1>Урок</h1></th>
+                <th><h1>Домашнее задание</h1></th>
 		    </tr>
 	    </thead>
-        {% for i in range(0, len_sp - 1, 3) %}
+        {% for i in range(0, len_sp - 1, 4) %}
         <tr>
-            <th><a href="{{ sp_all[i][1] }}" style="color: #F0E68C">{{ sp_all[i] }}</a></th>
-            <th><a href="{{ sp_all[i + 1][1] }}" style="color: #F0E68C">{{ sp_all[i + 1] }}</a></th>
-            <th><a href="{{ sp_all[i + 2][1] }}" style="color: #F0E68C">{{ sp_all[i + 2] }}</a></th>
+            <th><a style="color: #F0E68C">{{ sp_all[i] }}</a></th>
+            <th><a style="color: #F0E68C">{{ sp_all[i + 1] }}</a></th>
+            <th><a style="color: #F0E68C">{{ sp_all[i + 2] }}</a></th>
+            {% if current_user.status == 'tutor' and sp_all[i + 3] == '-' %}
+            <th><a href="/add_homework/{{ this_day }}" style="color: #F0E68C">Прикрепить ДЗ</a></th>
+            {% elif sp_all[i + 3] == '+' %}
+            <th><a href="/watch_homework/{{ this_day }}" style="color: #F0E68C">ДЗ прикреплено</a></th>
+            {% else %}
+            <th><a style="color: #F0E68C">-</a></th>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

@@ -9,11 +9,12 @@
         {% if current_user.status == 'student' %}
         <a type="button" class="btn btn-info btn-lg" href="/my_tutors/{{ current_user.id }}" style="margin: 5px">Мои репетиторы</a>
         <a type="button" class="btn btn-success btn-lg" href="/my_parents/{{ current_user.id }}" style="margin: 5px">Мои родители</a>
+        <a type="button" class="btn btn-success btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
         <a type="button" class="btn btn-danger btn-lg" href="/logout" style="margin: 5px">Выйти из аккаунта</a>
         {% endif %}
         {% if current_user.status == 'tutor' %}
         <a type="button" class="btn btn-success btn-lg" href="/my_students/{{ current_user.id }}" style="margin: 5px">Мои ученики</a>
-        <a type="button" class="btn btn-info btn-lg" href="/my_courses_for_tutor/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
+        <a type="button" class="btn btn-info btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
         <a type="button" class="btn btn-danger btn-lg" href="/logout" style="margin: 5px">Выйти из аккаунта</a>
         <p>{{ about }}</p>
         <a type="button" class="btn btn-warning" href="/rewrite_info_for_tutor" style="margin: 5px">Отредактировать или добавить информацию обо мне</a>
