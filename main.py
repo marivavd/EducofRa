@@ -5,7 +5,6 @@ from data import db_session
 from forms.user import RegisterForm, LoginForm
 from forms.adding import PostForm
 from forms.add_lesson import LessonForm
-from forms.add_time import TimeForm
 from forms.list import Listform
 from flask_login import LoginManager, current_user, logout_user, login_required, login_user
 from api import main_api
@@ -15,6 +14,7 @@ from data.weekdays import Weekday
 from data.students import Student
 from data.parents import Parent
 from data.lessons import Lesson
+from data.homeworks import Homework
 from requests import get, put, post
 from data.db import MyDataBase
 from datetime import date
@@ -44,7 +44,7 @@ def logout():
 def day(number):
     current_month, current_year = datetime.datetime.today().month, datetime.datetime.today().year
     our_weekday = datetime.datetime(current_year, current_month, number).weekday()
-    this_day = str(datetime.datetime(current_year, current_month, number))
+    this_day = str(datetime.datetime(current_year, current_month, number).date())
     db_sess = db_session.create_session()
     sp_all = []
     if current_user.status == 'student':
@@ -63,6 +63,7 @@ def day(number):
                         sp_all.append('+')
                     else:
                         sp_all.append('-')
+                    sp_all.append(lesson.id)
         return render_template("day.html", who="Преподаватель", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
     elif current_user.status == 'tutor':
         tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
@@ -84,6 +85,7 @@ def day(number):
                         sp_all.append('+')
                     else:
                         sp_all.append('-')
+                    sp_all.append(lesson.id)
         return render_template("day.html", who="Ученики", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
     else:
         parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
@@ -102,6 +104,7 @@ def day(number):
                             sp_all.append('+')
                         else:
                             sp_all.append('-')
+                        sp_all.append(lesson.id)
         return render_template("day.html", who="Ребёнок", len_sp=len(sp_all), sp_all=sp_all, this_day=this_day)
 
 
@@ -343,7 +346,8 @@ def course(lesson_id):
         sp_stud = []
         for i in sp_stud_id:
             sp_stud.append(db_sess.query(Student).filter(Student.id_user == i).first())
-        return render_template("course_for_tutor.html", lesson=lesson, sp_stud=sp_stud, sp_id_of_students_already=sp_id_of_students_already)
+        return render_template("course_for_tutor.html", lesson=lesson, sp_stud=sp_stud,
+                               sp_id_of_students_already=sp_id_of_students_already)
     if current_user.status == 'student':
         tutor = db_sess.query(Tutor).filter(Tutor.id_user == lesson.id_tutor).first()
         return render_template("course_for_student.html", lesson=lesson, tutor=tutor)
@@ -407,19 +411,49 @@ def user_page():
         return render_template("user_page.html")
 
 
-@app.route("/rewrite_info_for_tutor")
-def rewrite_info_for_tutor():
-    db_sess = db_session.create_session()
-    tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
-    return render_template("rewrite_info_for_tutor.html", about=(tutor.about if tutor.about != None else ('')))
-
-
 @app.route("/rewrite_info_for_tutor", methods=['GET', 'POST'])
 def add_info():
     if request.method == 'POST':
         about = request.form['about']
         put(f'http://127.0.0.1:5000/api/rewrite_info_for_tutor/{current_user.id}', json={"about": about}).json()
-    return redirect('/user_page')
+        return redirect('/user_page')
+    db_sess = db_session.create_session()
+    tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
+    return render_template("rewrite_info_for_tutor.html", about=(tutor.about if tutor.about != None else ('')))
+
+
+@app.route("/add_homework/<date>/<int:lesson_id>", methods=['GET', 'POST'])
+def add_homework(date, lesson_id):
+    if request.method == 'POST':
+        answer = post(f'http://127.0.0.1:5000/api/add_homework',
+             json={'text': request.form['homework'], 'date': date}).json()
+        db_sess = db_session.create_session()
+        lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
+        lesson.homeworks[date] = db_sess.query(Homework).filter(Homework.id == answer['id']).first().id
+        put(f'http://127.0.0.1:5000/api/add_homework_in_lesson/{lesson.id}',
+            json={'homeworks': lesson.homeworks}).json()
+        return redirect(f'/day/{int(list(map(int, date.split("-")))[2])}')
+    return render_template("add_homework.html", date=date, lesson_id=lesson_id)
+
+
+@app.route("/watch_homework/<date>/<int:lesson_id>")
+def watch_homework(date, lesson_id):
+    db_sess = db_session.create_session()
+    lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
+    homework = db_sess.query(Homework).filter(Homework.id == lesson.homeworks[date]).first()
+    text = homework.text
+    if current_user.status == 'student':
+        done = False
+        if current_user.id in homework.done_homework_and_scores['done']:
+            done = True
+        return render_template('watch_homework_for_student.html', text=text, date=date, done=done, homework_id=homework.id)
+
+@app.route("/change_status_of_homework/<int:homework_id>", methods=['GET', 'POST'])
+def change_status_of_homework(homework_id):
+    if request.method == 'POST':
+        status = request.form['status']
+        print(status)
+
 
 @app.route("/show_page_of_user/<int:id_of_person>")
 def show_page_of_user(id_of_person):
@@ -431,7 +465,6 @@ def show_page_of_user(id_of_person):
             stars = 0
         else:
             stars = round(tutor.summa_marks / tutor.count_marks)
-        print(stars)
         return render_template("page_of_tutor.html", tutor=tutor, sl_reviews=tutor.reviews, stars=stars)
     elif user.status == 'student' and current_user.status == 'tutor':
         student = db_sess.query(Student).filter(Student.id_user == id_of_person).first()
@@ -477,12 +510,13 @@ def change_students(lesson_id):
                 if lesson_id not in student.tutors_and_parents_and_lessons['id_of_lessons']:
                     student.tutors_and_parents_and_lessons['id_of_lessons'].append(lesson_id)
                     put(f'http://127.0.0.1:5000/api/add_tutor_or_parent_or_lesson/{student.id_user}',
-                    json={"tutors_and_parents_and_lessons": student.tutors_and_parents_and_lessons}).json()
+                        json={"tutors_and_parents_and_lessons": student.tutors_and_parents_and_lessons}).json()
         lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
         lesson.students_and_when['id_of_students'] = sp_new_stud
         put(f'http://127.0.0.1:5000/api/change_students_in_lesson/{lesson.id}',
             json={"students_and_when": lesson.students_and_when}).json()
     return redirect(f'/course/{lesson_id}')
+
 
 if __name__ == '__main__':
     db_session.global_init("tutorcoon.db")

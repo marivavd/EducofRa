@@ -5,3 +5,4 @@ from . import users
 from . import lessons
 from . import weekdays
 from . import tests
+from . import homeworks

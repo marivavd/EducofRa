@@ -6,7 +6,9 @@ from data.tutors import Tutor
 from data.students import Student
 from data.parents import Parent
 from data.lessons import Lesson
+from data.homeworks import Homework
 from data.db import MyDataBase
+import datetime
 
 blueprint = Blueprint('main_api', __name__, template_folder='templates')
 db = MyDataBase()
@@ -164,6 +166,7 @@ def rewrite_info_for_tutor(user_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
+
 @blueprint.route('/api/comment_for_tutor/<tutor_id>', methods=['PUT'])
 def comment_for_tutor(tutor_id):
     if not request.json:
@@ -186,5 +189,32 @@ def change_students_in_lesson(lesson_id):
     if not lesson:
         return jsonify({'error': 'Not found'})
     lesson.students_and_when = request.json["students_and_when"]
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/add_homework/', methods=['POST'])
+def add_homework():
+    sp = list(map(int, request.json["date"].split('-')))
+    normal_date = datetime.datetime(sp[0], sp[1], sp[2]).date()
+    homework = Homework(
+        text=request.json["text"],
+        date=normal_date
+    )
+    db_sess = db_session.create_session()
+    db_sess.add(homework)
+    db_sess.commit()
+    return jsonify({'id': homework.id})
+
+
+@blueprint.route('/api/add_homework_in_lesson/<lesson_id>', methods=['PUT'])
+def add_homework_in_lesson(lesson_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    lesson = db_sess.query(Lesson).get(lesson_id)
+    if not lesson:
+        return jsonify({'error': 'Not found'})
+    lesson.homeworks = request.json["homeworks"]
     db_sess.commit()
     return jsonify({'success': 'OK'})

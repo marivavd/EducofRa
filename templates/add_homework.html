@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/add_homework.css">
+<form method="post" action="{{ url_for('add_homework', date=date, lesson_id=lesson_id)}}">
+    <label class="comment" for="msg">Домашнее задание:</label>
+    <textarea id="msg" name="homework"></textarea>
+    <div>
+        <button type="submit">Сохранить</button>
+    </div>
+</form>
+{% endblock %}
