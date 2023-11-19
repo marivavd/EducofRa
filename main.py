@@ -444,15 +444,48 @@ def watch_homework(date, lesson_id):
     text = homework.text
     if current_user.status == 'student':
         done = False
+        scores = 'ещё не выставлены'
         if current_user.id in homework.done_homework_and_scores['done']:
             done = True
-        return render_template('watch_homework_for_student.html', text=text, date=date, done=done, homework_id=homework.id)
+            if current_user.id in homework.done_homework_and_scores['scores'].keys():
+                scores = str(homework.done_homework_and_scores['scores'][current_user.id])
+        return render_template('watch_homework_for_student.html', scores=scores, lesson_id=lesson.id, text=text, date=date, done=done, homework_id=homework.id)
+    if current_user.status == 'parent':
+        parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
+        sp = []
+        for i in parent.id_of_children['id_of_children']:
+            if i in lesson.students_and_when['id_of_students']:
+                sp.append(db_sess.query(Student).filter(Student.id_user == i).first().name)
+                done = False
+                scores = 'ещё не выставлены'
+                if i in homework.done_homework_and_scores['done']:
+                    done = True
+                    if i in homework.done_homework_and_scores['scores'].keys():
+                        scores = str(homework.done_homework_and_scores['scores'][i])
+                sp.append(done)
+                sp.append(scores)
+        return render_template('watch_homework_for_parent.html', len_sp=len(sp), sp=sp, text=text, date=date)
+    else:
+        return render_template('watch_homework_for_tutor.html', text=text, date=date)
 
-@app.route("/change_status_of_homework/<int:homework_id>", methods=['GET', 'POST'])
-def change_status_of_homework(homework_id):
+
+
+
+@app.route("/change_status_of_homework/<int:homework_id>/<date>/<int:lesson_id>", methods=['GET', 'POST'])
+def change_status_of_homework(homework_id, date, lesson_id):
+    db_sess = db_session.create_session()
+    homework = db_sess.query(Homework).filter(Homework.id == homework_id).first()
     if request.method == 'POST':
-        status = request.form['status']
-        print(status)
+        if request.form.get('status') and current_user.id not in homework.done_homework_and_scores['done']:
+            homework.done_homework_and_scores['done'].append(current_user.id)
+            put(f'http://127.0.0.1:5000/api/change_done_homework/{homework.id}',
+                json={'done_homework_and_scores': homework.done_homework_and_scores}).json()
+        elif not request.form.get('status') and current_user.id in homework.done_homework_and_scores['done']:
+            homework.done_homework_and_scores['done'].remove(current_user.id)
+            put(f'http://127.0.0.1:5000/api/change_done_homework/{homework.id}',
+                json={'done_homework_and_scores': homework.done_homework_and_scores}).json()
+    return redirect(f"/watch_homework/{date}/{lesson_id}")
+
 
 
 @app.route("/show_page_of_user/<int:id_of_person>")

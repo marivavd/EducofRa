@@ -218,3 +218,16 @@ def add_homework_in_lesson(lesson_id):
     lesson.homeworks = request.json["homeworks"]
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/change_done_homework/<homework_id>', methods=['PUT'])
+def change_done_homework(homework_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    homework = db_sess.query(Homework).get(homework_id)
+    if not homework:
+        return jsonify({'error': 'Not found'})
+    homework.done_homework_and_scores = request.json["done_homework_and_scores"]
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
