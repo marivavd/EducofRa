@@ -4,4 +4,14 @@
 <link rel="stylesheet" type="text/css" href="/static/css/course_for_tutor.css">
 <h1>{{ lesson.name }}</h1>
 <h2>Преподаватель: {{ tutor.surname }} {{ tutor.name }}</h2>
+<h2>Статистика</h2>
+<div class="simple-bar-chart">
+    {% for i in sp_scores %}
+    <div class="item" style="--clr: #F4A460; --val: {{ i[0]}}">
+        <div class="label">{{ i[2] }}</div>
+        <div class="value">{{ i[1] }}</div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

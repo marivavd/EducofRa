@@ -16,15 +16,15 @@
 	    </thead>
         {% for i in range(0, len_sp - 1, 5) %}
         <tr>
-            <th><a style="color: #F0E68C">{{ sp_all[i] }}</a></th>
-            <th><a style="color: #F0E68C">{{ sp_all[i + 1] }}</a></th>
-            <th><a style="color: #F0E68C">{{ sp_all[i + 2] }}</a></th>
+            <th><a style="color: #037">{{ sp_all[i] }}</a></th>
+            <th><a style="color: #037">{{ sp_all[i + 1] }}</a></th>
+            <th><a style="color: #037">{{ sp_all[i + 2] }}</a></th>
             {% if current_user.status == 'tutor' and sp_all[i + 3] == '-' %}
-            <th><a href="/add_homework/{{ this_day }}/{{ sp_all[i + 4] }}" style="color: #F0E68C">Прикрепить ДЗ</a></th>
+            <th><a href="/add_homework/{{ this_day }}/{{ sp_all[i + 4] }}" style="color: #037">Прикрепить ДЗ</a></th>
             {% elif sp_all[i + 3] == '+' %}
-            <th><a href="/watch_homework/{{ this_day }}/{{ sp_all[i + 4] }}" style="color: #F0E68C">ДЗ прикреплено</a></th>
+            <th><a href="/watch_homework/{{ this_day }}/{{ sp_all[i + 4] }}" style="color: #037">ДЗ прикреплено</a></th>
             {% else %}
-            <th><a style="color: #F0E68C">-</a></th>
+            <th><a style="color: #037">-</a></th>
             {% endif %}
         </tr>
         {% endfor %}

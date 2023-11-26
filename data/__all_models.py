@@ -6,3 +6,5 @@ from . import lessons
 from . import weekdays
 from . import tests
 from . import homeworks
+from . import help_materials
+from . import video_lessons

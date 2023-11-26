@@ -15,6 +15,9 @@ from data.students import Student
 from data.parents import Parent
 from data.lessons import Lesson
 from data.homeworks import Homework
+from data.tests import Test
+from data.video_lessons import Video_lesson
+from data.help_materials import Help_material
 from requests import get, put, post
 from data.db import MyDataBase
 from datetime import date
@@ -343,14 +346,49 @@ def course(lesson_id):
         sp_id_of_students_already = lesson.students_and_when['id_of_students']
         tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
         sp_stud_id = tutor.students_and_lessons['id_of_students']
+        if len(lesson.scores.items()) != 0:
+            max_zn = sorted(lesson.scores.items(), key=lambda x: -x[1])[0][1]
+        else:
+            max_zn = 0
+        sp_scores = []
         sp_stud = []
         for i in sp_stud_id:
             sp_stud.append(db_sess.query(Student).filter(Student.id_user == i).first())
+        for i in sp_id_of_students_already:
+            student = db_sess.query(Student).filter(Student.id_user == i).first()
+            if str(i) in lesson.scores.keys():
+                sp_scores.append([lesson.scores[str(i)] * 100 // max_zn, lesson.scores[str(i)], f'{student.surname} {student.name}'])
+            else:
+                sp_scores.append([0, 0, f'{student.surname} {student.name}'])
         return render_template("course_for_tutor.html", lesson=lesson, sp_stud=sp_stud,
-                               sp_id_of_students_already=sp_id_of_students_already)
+                               sp_id_of_students_already=sp_id_of_students_already, sp_scores=sp_scores)
     if current_user.status == 'student':
         tutor = db_sess.query(Tutor).filter(Tutor.id_user == lesson.id_tutor).first()
-        return render_template("course_for_student.html", lesson=lesson, tutor=tutor)
+        sp_id_of_students_already = lesson.students_and_when['id_of_students']
+        if len(lesson.scores.items()) != 0:
+            max_zn = sorted(lesson.scores.items(), key=lambda x: -x[1])[0][1]
+        else:
+            max_zn = 0
+        sp_scores = []
+        for i in sp_id_of_students_already:
+            student = db_sess.query(Student).filter(Student.id_user == i).first()
+            if str(i) in lesson.scores.keys():
+                if current_user.id == i:
+                    sp_scores.append(
+                        [lesson.scores[str(i)] * 100 // max_zn, lesson.scores[str(i)],
+                         'Я'])
+                else:
+                    sp_scores.append(
+                        [lesson.scores[str(i)] * 100 // max_zn, lesson.scores[str(i)],
+                         f'{student.surname} {student.name}'])
+            else:
+                if current_user.id == i:
+                    sp_scores.append(
+                        [0, 0, 'Я'])
+                else:
+                    sp_scores.append(
+                        [0, 0, f'{student.surname} {student.name}'])
+        return render_template("course_for_student.html", lesson=lesson, tutor=tutor, sp_scores=sp_scores)
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -426,7 +464,7 @@ def add_info():
 def add_homework(date, lesson_id):
     if request.method == 'POST':
         answer = post(f'http://127.0.0.1:5000/api/add_homework',
-             json={'text': request.form['homework'], 'date': date}).json()
+                      json={'text': request.form['homework'], 'date': date}).json()
         db_sess = db_session.create_session()
         lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
         lesson.homeworks[date] = db_sess.query(Homework).filter(Homework.id == answer['id']).first().id
@@ -447,9 +485,10 @@ def watch_homework(date, lesson_id):
         scores = 'ещё не выставлены'
         if current_user.id in homework.done_homework_and_scores['done']:
             done = True
-            if current_user.id in homework.done_homework_and_scores['scores'].keys():
-                scores = str(homework.done_homework_and_scores['scores'][current_user.id])
-        return render_template('watch_homework_for_student.html', scores=scores, lesson_id=lesson.id, text=text, date=date, done=done, homework_id=homework.id)
+            if str(current_user.id) in homework.done_homework_and_scores['scores'].keys():
+                scores = str(homework.done_homework_and_scores['scores'][str(current_user.id)])
+        return render_template('watch_homework_for_student.html', scores=scores, lesson_id=lesson.id, text=text,
+                               date=date, done=done, homework_id=homework.id)
     if current_user.status == 'parent':
         parent = db_sess.query(Parent).filter(Parent.id_user == current_user.id).first()
         sp = []
@@ -460,15 +499,24 @@ def watch_homework(date, lesson_id):
                 scores = 'ещё не выставлены'
                 if i in homework.done_homework_and_scores['done']:
                     done = True
-                    if i in homework.done_homework_and_scores['scores'].keys():
-                        scores = str(homework.done_homework_and_scores['scores'][i])
+                    if str(i) in homework.done_homework_and_scores['scores'].keys():
+                        scores = str(homework.done_homework_and_scores['scores'][str(i)])
                 sp.append(done)
                 sp.append(scores)
         return render_template('watch_homework_for_parent.html', len_sp=len(sp), sp=sp, text=text, date=date)
     else:
-        return render_template('watch_homework_for_tutor.html', text=text, date=date)
-
-
+        sp = []
+        for i in lesson.students_and_when['id_of_students']:
+            student = db_sess.query(Student).filter(Student.id_user == i).first()
+            status = 'не выполнено'
+            if i in homework.done_homework_and_scores['done']:
+                status = 'выполнено'
+            scores = 0
+            if str(i) in homework.done_homework_and_scores['scores'].keys():
+                scores = homework.done_homework_and_scores['scores'][str(i)]
+            sp.append([f'{student.surname} {student.name}', status, scores, student.id_user])
+        return render_template('watch_homework_for_tutor.html', text=text, date=date, sp=sp, len_sp=len(sp),
+                               homework_id=homework.id, lesson_id=lesson_id)
 
 
 @app.route("/change_status_of_homework/<int:homework_id>/<date>/<int:lesson_id>", methods=['GET', 'POST'])
@@ -486,6 +534,25 @@ def change_status_of_homework(homework_id, date, lesson_id):
                 json={'done_homework_and_scores': homework.done_homework_and_scores}).json()
     return redirect(f"/watch_homework/{date}/{lesson_id}")
 
+
+@app.route("/change_scores_of_homework/<int:homework_id>/<int:lesson_id>/<int:user_id>/<date>", methods=['GET', 'POST'])
+def change_scores_of_homework(homework_id, lesson_id, user_id, date):
+    db_sess = db_session.create_session()
+    homework = db_sess.query(Homework).filter(Homework.id == homework_id).first()
+    lesson = db_sess.query(Lesson).filter(Lesson.id == lesson_id).first()
+    if request.method == 'POST':
+        if str(user_id) in lesson.scores.keys():
+            if str(user_id) in homework.done_homework_and_scores['scores']:
+                lesson.scores[str(user_id)] -= homework.done_homework_and_scores['scores'][str(user_id)]
+            lesson.scores[str(user_id)] += int(request.form.get('scores'))
+        else:
+            lesson.scores[str(user_id)] = int(request.form.get('scores'))
+        put(f'http://127.0.0.1:5000/api/change_scores_lesson/{lesson.id}',
+            json={'scores': lesson.scores}).json()
+        homework.done_homework_and_scores['scores'][user_id] = int(request.form.get('scores'))
+        put(f'http://127.0.0.1:5000/api/change_done_or_scores_homework/{homework.id}',
+            json={'done_homework_and_scores': homework.done_homework_and_scores}).json()
+    return redirect(f"/watch_homework/{date}/{lesson_id}")
 
 
 @app.route("/show_page_of_user/<int:id_of_person>")
@@ -549,6 +616,27 @@ def change_students(lesson_id):
         put(f'http://127.0.0.1:5000/api/change_students_in_lesson/{lesson.id}',
             json={"students_and_when": lesson.students_and_when}).json()
     return redirect(f'/course/{lesson_id}')
+
+
+@app.route("/tests")
+def tests():
+    db_sess = db_session.create_session()
+    tests = db_sess.query(Test).all()
+    return render_template("tests.html", tests=tests, len_sp=len(tests))
+
+
+@app.route("/help_materials")
+def help_materials():
+    db_sess = db_session.create_session()
+    help_materials = db_sess.query(Help_material).all()
+    return render_template("help_materials.html", help_materials=help_materials, len_sp=len(help_materials))
+
+
+@app.route("/video_lessons")
+def video_lessons():
+    db_sess = db_session.create_session()
+    video_lessons = db_sess.query(Video_lesson).all()
+    return render_template("video_lessons.html", video_lessons=video_lessons, len_sp=len(video_lessons))
 
 
 if __name__ == '__main__':
