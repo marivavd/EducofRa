@@ -23,17 +23,18 @@ h1 {text-align: center;
     }
 .c {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac
+    color: #fee5ac;
     }
 .d {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac}
+    color: #fee5ac;
+    text-align: center;}
 @font-face {
 	font-family: 'FontName1';
 	src: url(/static/fonts/ambidexter_regular.otf)}
 @font-face {
 	font-family: 'FontName2';
-	src: url(/static/fonts/ofont.ru_Calypso.ttf)}
+	src: url(/static/fonts/ofont.ru_Honday.ttf)}
 body {
   min-height: 100vh;
   position: relative;
