@@ -7,22 +7,42 @@
     <h2>id: {{current_user.id}}</h2>
     <div class="buttons">
         {% if current_user.status == 'student' %}
-        <a type="button" class="btn btn-info btn-lg" href="/my_tutors/{{ current_user.id }}" style="margin: 5px">Мои репетиторы</a>
+        <a type="button" class="btn btn-primary btn-lg" href="/my_tutors/{{ current_user.id }}" style="margin: 5px">Мои репетиторы</a>
         <a type="button" class="btn btn-success btn-lg" href="/my_parents/{{ current_user.id }}" style="margin: 5px">Мои родители</a>
-        <a type="button" class="btn btn-success btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
+        <a type="button" class="btn btn-secondary btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
         <a type="button" class="btn btn-danger btn-lg" href="/logout" style="margin: 5px">Выйти из аккаунта</a>
         {% endif %}
         {% if current_user.status == 'tutor' %}
-        <a type="button" class="btn btn-success btn-lg" href="/my_students/{{ current_user.id }}" style="margin: 5px">Мои ученики</a>
+        <a type="button" class="btn btn-primary btn-lg" href="/my_students/{{ current_user.id }}" style="margin: 5px">Мои ученики</a>
         <a type="button" class="btn btn-info btn-lg" href="/my_courses/{{ current_user.id }}" style="margin: 5px">Мои курсы</a>
         <a type="button" class="btn btn-danger btn-lg" href="/logout" style="margin: 5px">Выйти из аккаунта</a>
         <p>{{ about }}</p>
         <a type="button" class="btn btn-warning" href="/rewrite_info_for_tutor" style="margin: 5px">Отредактировать или добавить информацию обо мне</a>
         {% endif %}
         {% if current_user.status == 'parent' %}
-        <a type="button" class="btn btn-info btn-lg" href="/my_children/{{ current_user.id }}" style="margin: 5px">Мои дети</a>
+        <a type="button" class="btn btn-primary btn-lg" href="/my_children/{{ current_user.id }}" style="margin: 5px">Мои дети</a>
         <a type="button" class="btn btn-danger btn-lg" href="/logout" style="margin: 5px">Выйти из аккаунта</a>
         {% endif %}
 	</div>
+    {% if current_user.status == 'tutor' %}
+    <h3>Редактировать предметы для преподавания:</h3>
+    <form method="POST" action="/change_subjects/{{ tutor.id }}">
+    {% for i in sp_subjects %}
+    {% if i in sp_subjects_already %}
+    <div class="checkbox">
+    <input type="checkbox" name="{{ i }}" value="{{ i }}" checked>
+    <label>{{i}}</label>
+    </div>
+    {% else %}
+    <div class="checkbox">
+    <input type="checkbox" name="{{ i }}" value="{{ i }}">
+    <label>{{ i }}</label>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <button type="submit">Submit</button>
+    </form>
+    {% endif %}
+
 {% endif %}
 {% endblock %}

@@ -26,7 +26,7 @@
             <a class="navbar-brand" href="/">Home</a>
           </li>
           <li class="nav-item active">
-            <a class="navbar-brand" href="/help_materials">Help material</a>
+            <a class="navbar-brand" href="/help_materials">Auxiliary material</a>
           </li>
           <li class="nav-item active">
             <a class="navbar-brand" href="/tests">Tests</a>
@@ -37,6 +37,11 @@
           {% if current_user.status == 'tutor' %}
           <li class="nav-item active">
             <a class="navbar-brand" href="/add_course">Add course</a>
+          </li>
+          {% endif %}
+          {% if current_user.status == 'student' %}
+          <li class="nav-item active">
+            <a class="navbar-brand" href="/search_tutor">Search tutor</a>
           </li>
           {% endif %}
         </ul>

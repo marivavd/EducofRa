@@ -232,6 +232,7 @@ def change_done_or_scores_homework(homework_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
+
 @blueprint.route('/api/change_scores_lesson/<lesson_id>', methods=['PUT'])
 def change_scores_lesson(lesson_id):
     if not request.json:
@@ -241,5 +242,18 @@ def change_scores_lesson(lesson_id):
     if not lesson:
         return jsonify({'error': 'Not found'})
     lesson.scores = request.json["scores"]
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/change_subjects/<tutor_id>', methods=['PUT'])
+def change_subjects(tutor_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    tutor = db_sess.query(Tutor).get(tutor_id)
+    if not tutor:
+        return jsonify({'error': 'Not found'})
+    tutor.subjects = request.json["subjects"]
     db_sess.commit()
     return jsonify({'success': 'OK'})

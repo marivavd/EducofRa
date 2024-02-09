@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% block title%}my_courses{% endblock %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="/static/css/my_courses.css">
-<h1>Вспомогательные материалы</h1>
-{% for i in range(len_sp) %}
-<p><a class='courses' href="/static/img/help_materials/{{ help_materials[i].link }}">{{ i + 1}}. {{ help_materials[i].name }}</a></p>
-{% endfor %}
+<link rel="stylesheet" type="text/css" href="/static/css/help.css">
+<div class="container">
+    {% for i in range(1, 12) %}
+    <li class="card">
+        <a class='class' href="/all_subjects/help/{{ i }}">{{ i }} класс</a>
+    </li>
+    {% endfor %}
+    <li class="card">
+        <a class="class" href="/all_subjects/help/another">Другое</a>
+    </li>
+</div>
 {% endblock %}

@@ -13,6 +13,7 @@ class Tutor(SqlAlchemyBase, UserMixin):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     id_user = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('all_users.id'))
+    subjects = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, default={"subjects": []})
     students_and_lessons = sqlalchemy.Column(sqlalchemy.JSON, nullable=True, default={"id_of_students": [],
                                                                        "id_of_lessons": []})
     about = sqlalchemy.Column(sqlalchemy.Text)

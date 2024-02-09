@@ -11,23 +11,23 @@ background-size: cover;
 h1 {text-align: center;
     font-family: "FontName2";
 	font-size: 70px;
-	color: #fee5ac
+	color: #1a1a1a
     }
 .a {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac
+    color: #1a1a1a
     }
 .b {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac
+    color: #1a1a1a
     }
 .c {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac;
+    color: #1a1a1a
     }
 .d {font-size: 35px;
     font-family: 'FontName2';
-    color: #fee5ac;
+    color: #1a1a1a;
     text-align: center;}
 @font-face {
 	font-family: 'FontName1';

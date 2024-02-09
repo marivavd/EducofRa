@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title%}my_courses{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/choose_subject.css">
+<div class="container">
+    {% for i in sp_subjects %}
+    <li class="card">
+        <a class='class' href="/all_subjects/video/{{ i }}">{{ i }}</a>
+    </li>
+    {% endfor %}
+    <li class="card">
+        <a class="class" href="/all_subjects/video/another">Другое</a>
+    </li>
+</div>
+{% endblock %}

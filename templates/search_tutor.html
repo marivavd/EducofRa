@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title%}search tutor{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/search_tutor.css">
+<div class="mx-auto">
+    <form class="d-flex" role="search" method="post">
+        <select name="tutor_filter">
+            <option>name</option>
+            <option>surname</option>
+            <option>subject</option>
+        </select>
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+{% endblock %}

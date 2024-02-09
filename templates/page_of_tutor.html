@@ -15,7 +15,7 @@
     <h2>id: {{tutor.id_user}}</h2>
     <p>Немного о себе: {{ tutor.about }}</p>
      <form method="post" action="{{ url_for('send_marks_for_tutor', tutor_id = tutor.id_user)}}">
-         <div style="font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 20px; color: DarkBlue">
+         <div style="font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 20px; color: #1a1a1a">
              <input class="mark" type="radio" id="one" name="mark" value="1"/>
              <label for="one">1</label>
              <input class="mark" type="radio" id="two" name="mark" value="2"/>
@@ -27,7 +27,7 @@
              <input class="mark" type="radio" id="five" name="mark" value="5"/>
              <label for="five">5</label>
              <div>
-                 <button type="submit">Оставить оценку</button>
+                 <button type="submit" class="btn btn-dark">Оставить оценку</button>
              </div>
          </div>
      </form>
@@ -35,9 +35,10 @@
          <label class="comment" for="msg">Отзыв:</label>
          <textarea id="msg" name="user_message"></textarea>
          <div>
-             <button type="submit" style="padding-bottom: 5px">Оставить отзыв</button>
+             <button type="submit" class="btn btn-dark">Оставить отзыв</button>
          </div>
      </form>
+<h2>Отзывы:</h2>
 {% for key, val in sl_reviews.items() %}
 <div class="col-md6 border rounded">
     <h2>{{key}}</h2>

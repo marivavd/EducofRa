@@ -1,16 +1,18 @@
-
-.rating-result {
-	width: 265px;
-	margin: 0 auto;
-}
 .rating-result span {
-	padding: 0;
+	padding: 3;
 	font-size: 32px;
 	margin: 0 3px;
 	line-height: 1;
-	color: lightgrey;
+	color: #1a1a1a;
 	text-shadow: 1px 1px #bbb;
 }
+.rating-result {
+	width: 265px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
 .rating-result > span:before {
 	content: '★';
 }
@@ -21,7 +23,7 @@
 .comment {
   font-family: 'Roboto';
   font-size: 40px;
-  color: black
+  color: #1a1a1a
   display: inline-block;
   width: 90px;
   text-align: right;
@@ -34,7 +36,7 @@ textarea {
   border: 1px solid #999;
   vertical-align: top;
   height: 5em;
-  margin-left: 200px;
+  margin-left: 100px;
 }
 .status {border-radius: 50%;
   width: 16px;
@@ -49,17 +51,17 @@ textarea {
 	font-family: 'FontName';
 	src: url(/static/fonts/ofont.ru_NK123.ttf)}
 
-.nickname {color: #039;
+.nickname {color: #1a1a1a;
           font-family: 'FontName';
           font-size: 70px;
           text-align: center;
           margin-top: 5px}
-h2{color: #191970;
+h2{color: #1a1a1a;
    font-family: 'FontName';
    font-size: 40px;
    margin-top: 5px
    }
-p{color: #191970;
+p{color: #1a1a1a;
    font-family: 'FontName';
    font-size: 40px;
    margin-top: 5px
@@ -73,4 +75,8 @@ font-family: 'FontName';
 font-family: 'FontName';
    font-size: 40px;
    margin-top: 5px
+}
+button {
+margin-top: 10px;
+margin-bottom: 10px;
 }

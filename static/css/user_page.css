@@ -6,12 +6,12 @@
     border: 3px solid #039; /* Параметры рамки */
     float: left
    }
-.nickname {color: #039;
+.nickname {color: #1a1a1a;
           font-family: 'FontName';
           font-size: 70px;
           text-align: center;
           margin-top: 5px}
-h2{color: #191970;
+h2{color: #1a1a1a;
    font-family: 'FontName';
    font-size: 60px;
    text-align: left;
@@ -21,4 +21,14 @@ h2{color: #191970;
           margin-top: 70px;
           font-family: 'FontName';
           font-size: 40px
-          }
+}
+h3{
+   font-family: 'FontName';
+   font-size: 40px;
+   color: #1a1a1a
+}
+label{
+   font-family: 'FontName';
+   font-size: 20px;
+   color: #1a1a1a
+}

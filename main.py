@@ -28,6 +28,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 db = MyDataBase()
+sp_subjects = ['Математика', 'Русский язык', 'Литература', 'Иностранный язык', 'История', 'Обществознание', 'Информатика', 'Химия', 'Физика', 'География', 'Биология', 'Экология', 'Астрономия', 'Технология', 'Музыка', 'ИЗО', 'Физическая культура']
 
 
 @login_manager.user_loader
@@ -444,8 +445,9 @@ def user_page():
         if current_user.status == 'tutor':
             db_sess = db_session.create_session()
             tutor = db_sess.query(Tutor).filter(Tutor.id_user == current_user.id).first()
+            sp_subjects_already = tutor.subjects['subjects']
             return render_template("user_page.html",
-                                   about=(tutor.about if tutor.about != None else ('Пока здесь ничего нет')))
+                                   about=(tutor.about if tutor.about != None else ('Пока здесь ничего нет')), sp_subjects=sp_subjects, sp_subjects_already=sp_subjects_already, tutor=tutor)
         return render_template("user_page.html")
 
 
@@ -618,6 +620,24 @@ def change_students(lesson_id):
     return redirect(f'/course/{lesson_id}')
 
 
+@app.route("/change_subjects/<int:tutor_id>", methods=['GET', 'POST'])
+def change_subjects(tutor_id):
+    if request.method == 'POST':
+        db_sess = db_session.create_session()
+        tutor = db_sess.query(Tutor).filter(Tutor.id_user == tutor_id).first()
+
+        sp_new_subj = []
+        for i in sp_subjects:
+            option1 = request.form.get(f'{i}')
+            if option1:
+                sp_new_subj.append(i)
+        print(sp_new_subj)
+        tutor.subjects['subjects'] = sp_new_subj
+        put(f'http://127.0.0.1:5000/api/change_subjects/{tutor.id}',
+            json={"subjects": tutor.subjects}).json()
+    return redirect(f'/user_page')
+
+
 @app.route("/tests")
 def tests():
     db_sess = db_session.create_session()
@@ -637,6 +657,18 @@ def video_lessons():
     db_sess = db_session.create_session()
     video_lessons = db_sess.query(Video_lesson).all()
     return render_template("video_lessons.html", video_lessons=video_lessons, len_sp=len(video_lessons))
+
+
+@app.route("/search_tutor")
+def search_tutor():
+    db_sess = db_session.create_session()
+    tutors = db_sess.query(Tutor).all()
+    return render_template("search_tutor.html")
+
+
+@app.route("/all_subjects/<type>/<grade>")
+def all_subjects(type, grade):
+    return render_template("choose_subject.html", sp_subjects=sp_subjects, type=type, grade=grade)
 
 
 if __name__ == '__main__':
