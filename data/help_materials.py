@@ -11,6 +11,8 @@ class Help_material(SqlAlchemyBase, UserMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     link = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    grade = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    subject = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
 
 

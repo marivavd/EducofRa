@@ -2,29 +2,38 @@ html { height: 100%; }
 body { min-height: 100%; }
 .container {
     display: grid;
-    grid-template-columns: repeat(6, 200px);
-    grid-template-rows: repeat(3, 200px);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     column-gap: 2em;
     row-gap: 1em;
     margin-top: 60px;
 
-    justify-items: center;
   }
   .card {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     aspect-ratio: 2/3;
     display: block;
     position: relative;
     border-radius: 1rem;
     background-color: tan;
   }
-  .class{
+.class{
   color: #FFFFFF;
   font-size: 25px;
   position: absolute;
-   top: 50%;
+  top: 50%;
    left: 50%;
    margin-right: -50%;
    transform: translate(-50%, -50%)
   }
+h1 {text-align: center;
+    font-family: 'FontName bold';
+	 font-size: 60px;
+	 color: #1a1a1a
+     }
+@font-face {
+	font-family: 'FontName bold';
+	src: url(/static/fonts/ofont.ru_Honday.ttf);
+}

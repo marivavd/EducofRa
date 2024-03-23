@@ -659,17 +659,29 @@ def video_lessons():
     return render_template("video_lessons.html", video_lessons=video_lessons, len_sp=len(video_lessons))
 
 
-@app.route("/search_tutor")
-def search_tutor():
-    db_sess = db_session.create_session()
-    tutors = db_sess.query(Tutor).all()
-    return render_template("search_tutor.html")
-
 
 @app.route("/all_subjects/<type>/<grade>")
 def all_subjects(type, grade):
     return render_template("choose_subject.html", sp_subjects=sp_subjects, type=type, grade=grade)
 
+@app.route("/open/video/<grade>/<subject>")
+def open_video(grade, subject):
+    db_sess = db_session.create_session()
+    video_lessons = db_sess.query(Video_lesson).filter(Video_lesson.grade == str(grade), Video_lesson.subject == subject)
+    return render_template("show_materials.html", type="Видео-уроки", grade=grade, sp=video_lessons)
+
+@app.route("/open/help/<grade>/<subject>")
+def open_help_materials(grade, subject):
+    db_sess = db_session.create_session()
+    help_materials = db_sess.query(Help_material).filter(Help_material.grade == str(grade), Help_material.subject == subject)
+    return render_template("show_materials.html", type="Вспомогательные материалы", grade=grade, sp=help_materials)
+
+
+@app.route("/open/tests/<grade>/<subject>")
+def open_testa(grade, subject):
+    db_sess = db_session.create_session()
+    tests = db_sess.query(Test).filter(Test.grade == str(grade), Test.subject == subject)
+    return render_template("show_materials.html", type="Тесты", grade=grade, sp=tests)
 
 if __name__ == '__main__':
     db_session.global_init("tutorcoon.db")

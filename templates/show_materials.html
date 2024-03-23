@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title%}video_lessons{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/my_courses.css">
+<h1>{{ type }} для {{ grade}} класса</h1>
+{% for i in sp %}
+    {% if type == 'Видео-уроки' %}
+    <p style="text-align: center"><a class='courses' href="/static/img/video_lessons/{{ i.link }}">{{i.name}}</a></p>
+    {% endif %}
+    {% if type == 'Вспомогательные материалы' %}
+    <p style="text-align: center"><a class='courses' href="/static/img/help_materials/{{ i.link }}">{{i.name}}</a></p>
+    {% endif %}
+    {% if type == 'Тесты' %}
+    <p style="text-align: center"><a class='courses' href="{{ i.link }}">{{i.name}}</a></p>
+    {% endif %}
+{% endfor %}
+{% endblock %}
